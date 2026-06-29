@@ -164,8 +164,16 @@ void AHSCharacter::AddHealth(float Amount)
 	UE_LOG(LogTemp, Log, TEXT("Health increased to: %f"), Health);
 }
 
+float AHSCharacter::GetHealth() const
+{
+	return Health;
+}
+
 // 데미지 처리 함수
-float AHSCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+float AHSCharacter::TakeDamage(float DamageAmount,
+	FDamageEvent const& DamageEvent,
+	AController* EventInstigator,
+	AActor* DamageCauser)
 {
 	// 기본 데미지 처리 로직 호출 (필수는 아님)
 	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);

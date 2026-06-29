@@ -23,7 +23,7 @@ public:
 	
 	// 현재 체력을 가져오는 함수
 	UFUNCTION(BlueprintPure, Category = "Health")
-	int32 GetHealth() const;
+	float GetHealth() const;
 	// 체력을 회복시키는 함수
 	UFUNCTION(BlueprintCallable, Category = "Health")
 	void AddHealth(float Amount);
