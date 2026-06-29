@@ -9,4 +9,6 @@ class ASSIGNMENT5_API AHSGameMode : public AGameMode
 {
 	GENERATED_BODY()
 	
+public:
+	AHSGameMode();
 };
