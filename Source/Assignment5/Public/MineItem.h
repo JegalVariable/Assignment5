@@ -11,7 +11,10 @@ class ASSIGNMENT5_API AMineItem : public ABaseItem
 	
 public:
 	AMineItem();
-
+	
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item|Component")
+	USphereComponent* ExplosionCollision;
 	// 폭발까지 걸리는 시간 (5초)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mine")
 	float ExplosionDelay;
@@ -22,5 +25,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Mine")
 	float ExplosionDamage;
 
+	FTimerHandle ExplosionTimerHandle;
+	
 	virtual void ActivateItem(AActor* Activator) override;
+	
+	void Explode();
 };
