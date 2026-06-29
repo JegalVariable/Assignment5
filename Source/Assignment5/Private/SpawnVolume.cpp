@@ -17,15 +17,16 @@ ASpawnVolume::ASpawnVolume()
 	ItemDataTable = nullptr;
 }
 
-void ASpawnVolume::SpawnRandomItem()
+AActor* ASpawnVolume::SpawnRandomItem()
 {
 	if (FItemSpawnRow* SelectedRow = GetRandomItem())
 	{
 		if (UClass* ActualClass = SelectedRow->ItemClass.Get())
 		{
-			SpawnItem(ActualClass);
+			return SpawnItem(ActualClass);
 		}
 	}
+	return nullptr;
 }
 
 FVector ASpawnVolume::GetRandomPointInVolume() const
@@ -81,14 +82,15 @@ FItemSpawnRow* ASpawnVolume::GetRandomItem() const
 	return nullptr;
 }
 
-void ASpawnVolume::SpawnItem(TSubclassOf<AActor> ItemClass)
+AActor* ASpawnVolume::SpawnItem(TSubclassOf<AActor> ItemClass)
 {
-	if (!ItemClass) return;
+	if (!ItemClass) return nullptr;
 
-	GetWorld()->SpawnActor<AActor>(
+	AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(
 		ItemClass,
 		GetRandomPointInVolume(),
 		FRotator::ZeroRotator
 	);
+	return SpawnedActor;
 }
 

@@ -16,7 +16,7 @@ public:
 	ASpawnVolume();
 	
 	UFUNCTION(BlueprintCallable, Category = "Spawning")
-	void SpawnRandomItem();
+	AActor* SpawnRandomItem();
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Spawning")
@@ -31,5 +31,5 @@ protected:
 	FVector GetRandomPointInVolume() const;
 	FItemSpawnRow* GetRandomItem() const;
 	// 특정 아이템 클래스를 스폰하는 함수
-	void SpawnItem(TSubclassOf<AActor> ItemClass);
+	AActor* SpawnItem(TSubclassOf<AActor> ItemClass);
 };

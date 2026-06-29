@@ -18,6 +18,7 @@ void ACoinItem::ActivateItem(AActor* Activator)
 			if (AHSGameState* GameState = World->GetGameState<AHSGameState>())
 			{
 				GameState->AddScore(PointValue);
+				GameState->OnCoinCollected();
 			}
 		}
         
