@@ -4,6 +4,9 @@
 #include "GameFramework/Character.h"
 #include "HSCharacter.generated.h"
 
+class USpringArmComponent;
+class UCameraComponent;
+
 UCLASS()
 class ASSIGNMENT5_API AHSCharacter : public ACharacter
 {
