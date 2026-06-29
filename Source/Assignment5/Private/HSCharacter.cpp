@@ -19,7 +19,7 @@ AHSCharacter::AHSCharacter()
 	CameraComp->bUsePawnControlRotation = false;
 
 	NormalSpeed = 600.0f;
-	SprintSpeedMultiplier = 1.5f;
+	SprintSpeedMultiplier = 1.7f;
 	SprintSpeed = NormalSpeed * SprintSpeedMultiplier;
 
 	GetCharacterMovement()->MaxWalkSpeed = NormalSpeed;
