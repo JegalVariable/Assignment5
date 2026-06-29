@@ -1,4 +1,5 @@
 #include "HSGameState.h"
+#include "HSGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "SpawnVolume.h"
 #include "CoinItem.h"
@@ -27,11 +28,27 @@ int32 AHSGameState::GetScore() const
 
 void AHSGameState::AddScore(int32 Amount)
 {
-	Score += Amount;
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		UHSGameInstance* HSGameInstance = Cast<UHSGameInstance>(GameInstance);
+		if (HSGameInstance)
+		{
+			HSGameInstance->AddToScore(Amount);
+		}
+	}
 }
 
 void AHSGameState::StartLevel()
 {
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		UHSGameInstance* HSGameInstance = Cast<UHSGameInstance>(GameInstance);
+		if (HSGameInstance)
+		{
+			CurrentLevelIndex = HSGameInstance->CurrentLevelIndex;
+		}
+	}
+	
 	// 레벨 시작 시, 코인 개수 초기화
 	SpawnedCoinCount = 0;
 	CollectedCoinCount = 0;
@@ -96,32 +113,42 @@ void AHSGameState::OnCoinCollected()
 
 void AHSGameState::EndLevel()
 {
-		// 타이머 해제
-		GetWorldTimerManager().ClearTimer(LevelTimerHandle);
-		// 다음 레벨 인덱스로
-		CurrentLevelIndex++;
+	// 타이머 해제
+	GetWorldTimerManager().ClearTimer(LevelTimerHandle);
+	// 다음 레벨 인덱스로
+	CurrentLevelIndex++;
 
-		// 모든 레벨을 다 돌았다면 게임 오버 처리
-		if (CurrentLevelIndex >= MaxLevels)
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		UHSGameInstance* HSGameInstance = Cast<UHSGameInstance>(GameInstance);
+		if (HSGameInstance)
 		{
-				OnGameOver();
-				return;
+			AddScore(Score);
+			HSGameInstance->CurrentLevelIndex = CurrentLevelIndex;
 		}
+	}
+	
+	// 모든 레벨을 다 돌았다면 게임 오버 처리
+	if (CurrentLevelIndex >= MaxLevels)
+	{
+		OnGameOver();
+		return;
+	}
 		
-		// 레벨 맵 이름이 있다면 해당 맵 불러오기
-		if (LevelMapNames.IsValidIndex(CurrentLevelIndex))
-		{
-				UGameplayStatics::OpenLevel(GetWorld(), LevelMapNames[CurrentLevelIndex]);
-		}
-		else
-		{
-				// 맵 이름이 없으면 게임오버
-				OnGameOver();
-		}
+	// 레벨 맵 이름이 있다면 해당 맵 불러오기
+	if (LevelMapNames.IsValidIndex(CurrentLevelIndex))
+	{
+		UGameplayStatics::OpenLevel(GetWorld(), LevelMapNames[CurrentLevelIndex]);
+	}
+	else
+	{
+		// 맵 이름이 없으면 게임오버
+		OnGameOver();
+	}
 }
 
 void AHSGameState::OnGameOver()
 {
-		UE_LOG(LogTemp, Warning, TEXT("Game Over!!"));
-		// 여기서 UI를 띄운다거나, 재시작 기능을 넣을 수도 있음
+	UE_LOG(LogTemp, Warning, TEXT("Game Over!!"));
+	// 여기서 UI를 띄운다거나, 재시작 기능을 넣을 수도 있음
 }
