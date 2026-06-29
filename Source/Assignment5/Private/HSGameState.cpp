@@ -6,6 +6,11 @@
 AHSGameState::AHSGameState()
 {
 	Score = 0;
+	SpawnedCoinCount = 0;
+	CollectedCoinCount = 0;
+	LevelDuration = 30.0f; // 한 레벨당 30초
+	CurrentLevelIndex = 0;
+	MaxLevels = 3;
 }
 
 void AHSGameState::BeginPlay()
