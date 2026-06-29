@@ -1,3 +1,4 @@
+### UnrealEngine template
 # Visual Studio 2015 user specific files
 .vs/
 
@@ -40,7 +41,6 @@
 *.sdf
 *.VC.db
 *.VC.opendb
-.vsconfig
 
 # Precompiled Assets
 SourceArt/**/*.png
@@ -73,3 +73,10 @@ Plugins/**/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+# IntelliJ project files
+.idea
+.vs
+*.iml
+out
+gen
