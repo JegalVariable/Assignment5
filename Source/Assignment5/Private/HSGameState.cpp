@@ -21,7 +21,6 @@ void AHSGameState::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	UpdateHUD();
 	StartLevel();
 	
 	GetWorldTimerManager().SetTimer(
