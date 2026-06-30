@@ -52,6 +52,14 @@ void AHSGameState::AddScore(int32 Amount)
 
 void AHSGameState::StartLevel()
 {
+	if (APlayerController* PlayerController = GetWorld()->GetFirstPlayerController())
+	{
+		if (AHSPlayerController* HSPlayerController = Cast<AHSPlayerController>(PlayerController))
+		{
+			HSPlayerController->ShowGameHUD();
+		}
+	}
+	
 	if (UGameInstance* GameInstance = GetGameInstance())
 	{
 		UHSGameInstance* HSGameInstance = Cast<UHSGameInstance>(GameInstance);
@@ -163,7 +171,13 @@ void AHSGameState::EndLevel()
 
 void AHSGameState::OnGameOver()
 {
-	UpdateHUD();
+	if (APlayerController* PlayerController = GetWorld()->GetFirstPlayerController())
+	{
+		if (AHSPlayerController* HSPlayerController = Cast<AHSPlayerController>(PlayerController))
+		{
+			HSPlayerController->ShowMainMenu(true);
+		}
+	}
 	UE_LOG(LogTemp, Warning, TEXT("Game Over!!"));
 	// 여기서 UI를 띄운다거나, 재시작 기능을 넣을 수도 있음
 }
