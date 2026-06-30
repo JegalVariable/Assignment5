@@ -1,5 +1,7 @@
 #include "HSPlayerController.h"
 #include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
+#include "Blueprint/UserWidget.h"
 
 AHSPlayerController::AHSPlayerController()
 	: InputMappingContext(nullptr),
@@ -23,6 +25,16 @@ void AHSPlayerController::BeginPlay()
 			{
 				Subsystem->AddMappingContext(InputMappingContext, 0);
 			}
+		}
+	}
+	
+	// HUD 위젯 생성 및 표시
+	if (HUDWidgetClass)
+	{
+		UUserWidget* HUDWidget = CreateWidget<UUserWidget>(this, HUDWidgetClass);
+		if (HUDWidget)
+		{
+			HUDWidget->AddToViewport();
 		}
 	}
 }
