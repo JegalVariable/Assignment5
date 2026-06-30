@@ -1,6 +1,6 @@
 #include "HSPlayerController.h"
+#include "HSGameState.h"
 #include "EnhancedInputSubsystems.h"
-#include "EnhancedInputComponent.h"
 #include "Blueprint/UserWidget.h"
 
 AHSPlayerController::AHSPlayerController()
@@ -8,7 +8,9 @@ AHSPlayerController::AHSPlayerController()
 	  MoveAction(nullptr),
 	  JumpAction(nullptr),
 	  LookAction(nullptr),
-	  SprintAction(nullptr)
+	  SprintAction(nullptr),
+      HUDWidgetClass(nullptr),
+	  HUDWidgetInstance(nullptr)
 {
 }
 
@@ -31,10 +33,21 @@ void AHSPlayerController::BeginPlay()
 	// HUD 위젯 생성 및 표시
 	if (HUDWidgetClass)
 	{
-		UUserWidget* HUDWidget = CreateWidget<UUserWidget>(this, HUDWidgetClass);
-		if (HUDWidget)
+		HUDWidgetInstance = CreateWidget<UUserWidget>(this, HUDWidgetClass);
+		if (HUDWidgetInstance)
 		{
-			HUDWidget->AddToViewport();
+			HUDWidgetInstance->AddToViewport();
 		}
 	}
+	
+	AHSGameState* HSGameState = GetWorld() ? GetWorld()->GetGameState<AHSGameState>() : nullptr;
+	if (HSGameState)
+	{
+		HSGameState->UpdateHUD();
+	}
+}
+
+UUserWidget* AHSPlayerController::GetHUDWidget() const
+{
+	return HUDWidgetInstance;
 }

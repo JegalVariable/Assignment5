@@ -1,8 +1,11 @@
 #include "HSGameState.h"
 #include "HSGameInstance.h"
+#include "HSPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "SpawnVolume.h"
 #include "CoinItem.h"
+#include "Components/TextBlock.h"
+#include "Blueprint/UserWidget.h"
 
 AHSGameState::AHSGameState()
 {
@@ -18,7 +21,16 @@ void AHSGameState::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	UpdateHUD();
 	StartLevel();
+	
+	GetWorldTimerManager().SetTimer(
+			HUDUpdateTimerHandle,
+			this,
+			&AHSGameState::UpdateHUD,
+			0.1f,
+			true
+		);
 }
 
 int32 AHSGameState::GetScore() const
@@ -85,6 +97,8 @@ void AHSGameState::StartLevel()
 	false
 	);
 	
+	UpdateHUD();
+	
 	UE_LOG(LogTemp, Warning, TEXT("Level %d Start!, Spawned %d coin"),
 	CurrentLevelIndex + 1,
 	SpawnedCoinCount);
@@ -149,6 +163,42 @@ void AHSGameState::EndLevel()
 
 void AHSGameState::OnGameOver()
 {
+	UpdateHUD();
 	UE_LOG(LogTemp, Warning, TEXT("Game Over!!"));
 	// 여기서 UI를 띄운다거나, 재시작 기능을 넣을 수도 있음
+}
+
+void AHSGameState::UpdateHUD()
+{
+	if (APlayerController* PlayerController = GetWorld()->GetFirstPlayerController())
+	{
+		AHSPlayerController* HSPlayerController = Cast<AHSPlayerController>(PlayerController);
+		{
+			if (UUserWidget* HUDWidget = HSPlayerController->GetHUDWidget())
+			{
+				if (UTextBlock* TimeText = Cast<UTextBlock>(HUDWidget->GetWidgetFromName(TEXT("Time"))))
+				{
+					float RemainingTime = GetWorldTimerManager().GetTimerRemaining(LevelTimerHandle);
+					TimeText->SetText(FText::FromString(FString::Printf(TEXT("Time: %.1f"), RemainingTime)));
+				}
+				
+				if (UTextBlock* ScoreText = Cast<UTextBlock>(HUDWidget->GetWidgetFromName(TEXT("Score"))))
+				{
+					if (UGameInstance* GameInstance = GetGameInstance())
+					{
+						UHSGameInstance* HSGameInstance = Cast<UHSGameInstance>(GameInstance);
+						if (HSGameInstance)
+						{
+							ScoreText->SetText(FText::FromString(FString::Printf(TEXT("Score: %d"), HSGameInstance->TotalScore)));
+						}
+					}
+				}
+				
+				if (UTextBlock* LevelIndexText = Cast<UTextBlock>(HUDWidget->GetWidgetFromName(TEXT("Level"))))
+				{
+					LevelIndexText->SetText(FText::FromString(FString::Printf(TEXT("Level: %d"), CurrentLevelIndex + 1)));
+				}
+			}
+		}
+	}
 }
